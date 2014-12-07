@@ -13,7 +13,7 @@ function locationSuccess(pos)  {
   
   var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
       pos.coords.latitude + "," + pos.coords.longitude + 
-      "&radius=500&types=food&key=AIzaSyAdjwtsTRvZmiPden6haSVlEdIvlQaDmQg";
+      "&rankby=distance&types=restaurant&key=AIzaSyAdjwtsTRvZmiPden6haSVlEdIvlQaDmQg";
   
   console.log(url);
   

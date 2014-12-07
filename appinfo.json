@@ -6,12 +6,12 @@
         "location"
     ],
     "companyName": "mattkronengold@icloud.com",
-    "longName": "Test",
+    "longName": "Places",
     "projectType": "native",
     "resources": {
         "media": []
     },
-    "shortName": "Test",
+    "shortName": "Places",
     "uuid": "71f6027c-3a58-4cde-b039-0ae1dc2a9c9f",
     "versionCode": 1,
     "versionLabel": "1.0",

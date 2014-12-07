@@ -1,62 +1,69 @@
 #include <pebble.h>
-#include <window1.c>
+#include "window2.h"
   
 static Window *s_main_window;
+//static Window *s_window2;
 static TextLayer *s_textlayer_1;
-static TextLayer *s_textlayer_2;
-static TextLayer *s_textlayer_3;
+//static TextLayer *s_textlayer_3;
+static SimpleMenuLayer *s_menu;
+
+static char name_buffer[32];
+
 
 #define KEY_NAME 0
-  
-static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(s_textlayer_2, "Loading Address...");
-  text_layer_destroy(s_textlayer_3);
-}
+#define NUM_MENU_SECTIONS 1
+#define NUM_MENU_ITEMS 2
 
-static void click_config_provider(void *context) {
-  // Register the ClickHandlers
-  window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
-}
+static SimpleMenuSection menu_sections[NUM_MENU_SECTIONS];
 
-static void main_window_load(Window *window) 
+static SimpleMenuItem menu_items[NUM_MENU_ITEMS];
+
+static void menu_select_callback(int index, void *ctx)
 {
+  //menu_items[index].title = "Selected!";
+  //layer_mark_dirty(simple_menu_layer_get_layer(s_menu));
+  show_window2();
+}
   
-  // s_textlayer_1
-  s_textlayer_1 = text_layer_create(GRect(3, 11, 140, 18));
-  text_layer_set_text(s_textlayer_1, "Closest Food Location:");
+static void main_window_load(Window *window) 
+{  
+ // s_textlayer_1
+  s_textlayer_1 = text_layer_create(GRect(3, 1, 140, 29));
+  text_layer_set_text(s_textlayer_1, "Closest Food Location, Click for Address");
   text_layer_set_text_alignment(s_textlayer_1, GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(window), (Layer *)s_textlayer_1);
-  
-  // s_textlayer_2
-  s_textlayer_2 = text_layer_create(GRect(20, 33, 100, 71));
-  text_layer_set_background_color(s_textlayer_2, GColorBlack);
-  text_layer_set_text_color(s_textlayer_2, GColorWhite);
-  text_layer_set_text(s_textlayer_2, "Text layer");
-  text_layer_set_text_alignment(s_textlayer_2, GTextAlignmentCenter);
-  layer_add_child(window_get_root_layer(window), (Layer *)s_textlayer_2);
-  
-  // s_textlayer_3
-  s_textlayer_3 = text_layer_create(GRect(21, 110, 100, 32));
-  text_layer_set_text(s_textlayer_3, "Press Up for Address");
-  text_layer_set_text_alignment(s_textlayer_3, GTextAlignmentCenter);
-  layer_add_child(window_get_root_layer(window), (Layer *)s_textlayer_3);
-  
-  //Add Clicks
-  window_set_click_config_provider(window, click_config_provider);
 
+  //s_menu
+  int num_a_items = 0;
+  
+  menu_items[num_a_items++] = (SimpleMenuItem){
+    .title = name_buffer,
+    .callback = menu_select_callback,
+  };
+  
+  menu_items[num_a_items++] = (SimpleMenuItem){
+    .title = "Loading...2",
+    .callback = menu_select_callback,
+  };
+  
+  menu_sections[0] = (SimpleMenuSection){
+    .num_items = NUM_MENU_ITEMS,
+    .items = menu_items,
+  };
+  
+  s_menu = simple_menu_layer_create(GRect(0, 35, 144, 117), window, menu_sections, NUM_MENU_SECTIONS, NULL);
+  layer_add_child(window_get_root_layer(window), simple_menu_layer_get_layer(s_menu));
 }
 
 static void main_window_unload(Window *window) 
 {
   text_layer_destroy(s_textlayer_1);
-  text_layer_destroy(s_textlayer_2);
-  text_layer_destroy(s_textlayer_3);
-
+  simple_menu_layer_destroy(s_menu);
+  //text_layer_destroy(s_textlayer_3);
 }
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context)
   {
-  static char name_buffer[32];
   
   //Read first item
   
@@ -75,7 +82,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         break;
     }
     
-    text_layer_set_text(s_textlayer_2, name_buffer);
+    //text_layer_set_text(s_textlayer_2, name_buffer);
     
     // Look for next item
     
@@ -86,6 +93,14 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 
 static void init() 
 {
+  //register callbacks
+  
+  app_message_register_inbox_received(inbox_received_callback);
+  
+  //open appmessage
+  
+  app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
+  
   // Create main Window element and assign to pointer
   s_main_window = window_create();
 
@@ -98,13 +113,7 @@ static void init()
   // Show the Window on the watch, with animated=true
   window_stack_push(s_main_window, true);
   
-  //register callbacks
-  
-  app_message_register_inbox_received(inbox_received_callback);
-  
-  //open appmessage
-  
-  app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
+
 }
 
 static void deinit() 
