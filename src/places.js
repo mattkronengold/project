@@ -37,9 +37,10 @@ function locationSuccess(pos)  {
   
   var dictionary = {
   "KEY_NAME" : name
-};
   
-  //Send to Pebble
+  };
+  
+//Send to Pebble
 Pebble.sendAppMessage(dictionary,
                      function(e)  {
                        console.log("Info sent to Pebble!");
@@ -59,6 +60,7 @@ function locationError(err)  {
 }
 
 function getPlaces()  {
+  var type = "restaurant";
   navigator.geolocation.getCurrentPosition(
   locationSuccess,
   locationError,
@@ -66,19 +68,11 @@ function getPlaces()  {
   );
 }
 
+// Listen for Type to be received
 
-// Listen for when the watchface is opened
-Pebble.addEventListener('ready', 
-  function(e) {
-    console.log("PebbleKit JS ready!");
-    
-    getPlaces();
-  }
-);
-
-// Listen for when an AppMessage is received
 Pebble.addEventListener('appmessage',
   function(e) {
-    console.log("AppMessage received!");
-  }                     
+    console.log("PebbleKit JS has received message.");
+    getPlaces();
+  }
 );

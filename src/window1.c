@@ -1,7 +1,7 @@
 #include <pebble.h>
-#include "window2.h"
+#include "window1.h"
 
-static Window *s_window2;
+static Window *s_window1;
 static TextLayer *s_textlayer;
 static SimpleMenuLayer *s_menu;
 static char name_buffer[32];
@@ -21,7 +21,7 @@ static void menu_select_callback(int index, void *ctx)
   //show_window2();
 }
   
-static void window2_load(Window *window) 
+static void window1_load(Window *window) 
 {  
   // s_textlayer
   s_textlayer = text_layer_create(GRect(3, 1, 140, 29));
@@ -51,7 +51,7 @@ static void window2_load(Window *window)
   layer_add_child(window_get_root_layer(window), simple_menu_layer_get_layer(s_menu));
 }
 
-static void window2_unload(Window *window) 
+static void window1_unload(Window *window) 
 {
   text_layer_destroy(s_textlayer);
   simple_menu_layer_destroy(s_menu);
@@ -83,7 +83,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
   }
 }
 
-void show_window2(void) {
+void show_window1(void) {
   
   //register callbacks
   
@@ -94,19 +94,19 @@ void show_window2(void) {
   app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
   
   // Create main Window element and assign to pointer
-  s_window2 = window_create();
+  s_window1 = window_create();
 
   // Set handlers to manage the elements inside the Window
-  window_set_window_handlers(s_window2, (WindowHandlers) {
-    .load = window2_load,
-    .unload = window2_unload
+  window_set_window_handlers(s_window1, (WindowHandlers) {
+    .load = window1_load,
+    .unload = window1_unload
   });
   
   // Show the Window on the watch, with animated=true
-  window_stack_push(s_window2, true);
+  window_stack_push(s_window1, true);
 }
 
-void hide_window2(void) {
+void hide_window1(void) {
   
-  window_stack_remove(s_window2, true);
+  window_stack_remove(s_window1, true);
 }

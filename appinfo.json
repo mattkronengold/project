@@ -1,6 +1,7 @@
 {
     "appKeys": {
-        "KEY_NAME": 0
+        "KEY_NAME": 0,
+        "KEY_TYPE": 1
     },
     "capabilities": [
         "location"
