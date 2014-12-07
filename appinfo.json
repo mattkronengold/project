@@ -1,0 +1,21 @@
+{
+    "appKeys": {
+        "KEY_NAME": 0
+    },
+    "capabilities": [
+        "location"
+    ],
+    "companyName": "mattkronengold@icloud.com",
+    "longName": "Test",
+    "projectType": "native",
+    "resources": {
+        "media": []
+    },
+    "shortName": "Test",
+    "uuid": "71f6027c-3a58-4cde-b039-0ae1dc2a9c9f",
+    "versionCode": 1,
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}
