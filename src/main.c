@@ -1,26 +1,25 @@
 #include <pebble.h>
+#include <window1.c>
   
 static Window *s_main_window;
-//static TextLayer *s_time_layer;
 static TextLayer *s_textlayer_1;
 static TextLayer *s_textlayer_2;
 static TextLayer *s_textlayer_3;
 
 #define KEY_NAME 0
+  
+static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
+  text_layer_set_text(s_textlayer_2, "Loading Address...");
+  text_layer_destroy(s_textlayer_3);
+}
+
+static void click_config_provider(void *context) {
+  // Register the ClickHandlers
+  window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
+}
 
 static void main_window_load(Window *window) 
 {
-  /*
-  //create time layer
-  s_time_layer = text_layer_create(GRect(0, 55, 144, 50));
-  text_layer_set_background_color(s_time_layer, GColorClear);
-  text_layer_set_text_color(s_time_layer, GColorBlack);
-  text_layer_set_font(s_time_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18));
-  text_layer_set_text_alignment(s_time_layer, GTextAlignmentCenter);
-  text_layer_set_text(s_time_layer, "Loading");
-  */
-
-  //layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_time_layer));
   
   // s_textlayer_1
   s_textlayer_1 = text_layer_create(GRect(3, 11, 140, 18));
@@ -29,10 +28,10 @@ static void main_window_load(Window *window)
   layer_add_child(window_get_root_layer(window), (Layer *)s_textlayer_1);
   
   // s_textlayer_2
-  s_textlayer_2 = text_layer_create(GRect(20, 33, 100, 102));
+  s_textlayer_2 = text_layer_create(GRect(20, 33, 100, 71));
   text_layer_set_background_color(s_textlayer_2, GColorBlack);
   text_layer_set_text_color(s_textlayer_2, GColorWhite);
-  text_layer_set_text(s_textlayer_2, "Loading...");
+  text_layer_set_text(s_textlayer_2, "Text layer");
   text_layer_set_text_alignment(s_textlayer_2, GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(window), (Layer *)s_textlayer_2);
   
@@ -41,12 +40,17 @@ static void main_window_load(Window *window)
   text_layer_set_text(s_textlayer_3, "Press Up for Address");
   text_layer_set_text_alignment(s_textlayer_3, GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(window), (Layer *)s_textlayer_3);
+  
+  //Add Clicks
+  window_set_click_config_provider(window, click_config_provider);
+
 }
 
 static void main_window_unload(Window *window) 
 {
   text_layer_destroy(s_textlayer_1);
   text_layer_destroy(s_textlayer_2);
+  text_layer_destroy(s_textlayer_3);
 
 }
 
