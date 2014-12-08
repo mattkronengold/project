@@ -77,21 +77,12 @@ static void window1_unload(Window *window)
   simple_menu_layer_destroy(s_menu);
 }
 
-static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
+void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
   APP_LOG(APP_LOG_LEVEL_INFO, "Type sent to Pebble JS");
 }
 
 
-void show_window1(void) {
-  
-  //register callbacks
-  
-  app_message_register_outbox_sent(outbox_sent_callback);
-  
-  //open appmessage
-  
-  app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
-  
+void show_window1(void) {  
   // Create main Window element and assign to pointer
   s_window1 = window_create();
 

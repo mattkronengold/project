@@ -3,7 +3,6 @@
 
 static Window *s_window2;
 static TextLayer *s_textlayer;
-static TextLayer *s_textlayer_2;
 static SimpleMenuLayer *s_menu;
 
 #define KEY_NAME 0
@@ -29,14 +28,6 @@ static void window2_load(Window *window)
   text_layer_set_text(s_textlayer, "Locations");
   text_layer_set_text_alignment(s_textlayer, GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(window), (Layer *)s_textlayer);
-  
-    // s_textlayer_2
-  s_textlayer_2 = text_layer_create(GRect(20, 33, 100, 71));
-  text_layer_set_background_color(s_textlayer_2, GColorBlack);
-  text_layer_set_text_color(s_textlayer_2, GColorWhite);
-  text_layer_set_text(s_textlayer_2, "Text layer");
-  text_layer_set_text_alignment(s_textlayer_2, GTextAlignmentCenter);
-  layer_add_child(window_get_root_layer(window), (Layer *)s_textlayer_2);
 
   // s_menu
   int num_a_items = 0;
@@ -66,7 +57,7 @@ static void window2_unload(Window *window)
   simple_menu_layer_destroy(s_menu);
 }
 
-static void inbox_received_callback(DictionaryIterator *iterator, void *context)
+void inbox_received_callback(DictionaryIterator *iterator, void *context)
   {
   static char name_buffer[32];
   
@@ -87,7 +78,10 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         break;
     }
     
-    text_layer_set_text(s_textlayer, name_buffer);
+    //text_layer_set_text(s_textlayer, name_buffer);
+    
+      menu_items[0].title = name_buffer;
+  layer_mark_dirty(simple_menu_layer_get_layer(s_menu));
     
     // Look for next item
     
@@ -96,20 +90,8 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
   
 }
 
-static void appmsg_in_dropped(AppMessageResult reason, void *context) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "In dropped: %i", reason);
-}
-
 void show_window2(void) {
   
-  //register callbacks
-  
-  app_message_register_inbox_received(inbox_received_callback);
-  app_message_register_inbox_dropped(appmsg_in_dropped);
-  
-  //open appmessage
-  
-  app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
   
   // Create main Window element and assign to pointer
   s_window2 = window_create();
