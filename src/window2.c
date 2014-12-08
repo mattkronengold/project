@@ -87,7 +87,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         break;
     }
     
-    text_layer_set_text(s_textlayer_2, name_buffer);
+    text_layer_set_text(s_textlayer, name_buffer);
     
     // Look for next item
     

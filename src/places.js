@@ -10,14 +10,6 @@ var xhrRequest = function (url, type, callback) {
 };
 
 
-function getPlaces()  {
-  navigator.geolocation.getCurrentPosition(
-  locationSuccess,
-  locationError,
-    {timeout: 15000, maximumAge: 60000}
-  );
-}
-
 function locationSuccess(pos)  {
   
   //construct URL
@@ -67,6 +59,14 @@ Pebble.sendAppMessage(dictionary,
 
 function locationError(err)  {
   console.log("Error requesting location!");
+}
+
+function getPlaces()  {
+  navigator.geolocation.getCurrentPosition(
+  locationSuccess,
+  locationError,
+    {timeout: 15000, maximumAge: 60000}
+  );
 }
 
 // Listen for Type to be received
