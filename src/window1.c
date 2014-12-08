@@ -1,12 +1,14 @@
 #include <pebble.h>
 #include "window1.h"
+#include "window2.h"
 
 static Window *s_window1;
 static TextLayer *s_textlayer;
 static SimpleMenuLayer *s_menu;
-static char name_buffer[32];
 
 #define KEY_NAME 0
+#define KEY_TYPE 1
+
 #define NUM_MENU_SECTIONS 1
 #define NUM_MENU_ITEMS 2
 
@@ -14,18 +16,36 @@ static SimpleMenuSection menu_sections[NUM_MENU_SECTIONS];
 
 static SimpleMenuItem menu_items[NUM_MENU_ITEMS];
 
-static void menu_select_callback(int index, void *ctx)
+static void menu_select_callback1(int index, void *ctx)
 {
-  //menu_items[index].title = "Selected!";
-  //layer_mark_dirty(simple_menu_layer_get_layer(s_menu));
-  //show_window2();
+
+    Tuplet type_tuple =  TupletCString(KEY_TYPE, "restaurant");
+    DictionaryIterator *iter;
+    app_message_outbox_begin(&iter);
+    dict_write_tuplet(iter, &type_tuple);
+    dict_write_end(iter);
+    app_message_outbox_send();
+    show_window2();
+
+}
+
+static void menu_select_callback2(int index, void *ctx)
+{
+  
+    Tuplet type_tuple =  TupletCString(KEY_TYPE, "gas_station");
+    DictionaryIterator *iter;
+    app_message_outbox_begin(&iter);
+    dict_write_tuplet(iter, &type_tuple);
+    dict_write_end(iter);
+    app_message_outbox_send();
+    show_window2();
 }
   
 static void window1_load(Window *window) 
 {  
   // s_textlayer
   s_textlayer = text_layer_create(GRect(3, 1, 140, 29));
-  text_layer_set_text(s_textlayer, "Closest Food Location, Click for Address");
+  text_layer_set_text(s_textlayer, "Please Select a Type of Location");
   text_layer_set_text_alignment(s_textlayer, GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(window), (Layer *)s_textlayer);
 
@@ -33,13 +53,13 @@ static void window1_load(Window *window)
   int num_a_items = 0;
   
   menu_items[num_a_items++] = (SimpleMenuItem){
-    .title = name_buffer,
-    .callback = menu_select_callback,
+    .title = "Restaurant",
+    .callback = menu_select_callback1,
   };
   
   menu_items[num_a_items++] = (SimpleMenuItem){
-    .title = "Loading...2",
-    .callback = menu_select_callback,
+    .title = "Gas Station",
+    .callback = menu_select_callback2,
   };
   
   menu_sections[0] = (SimpleMenuSection){
@@ -57,37 +77,16 @@ static void window1_unload(Window *window)
   simple_menu_layer_destroy(s_menu);
 }
 
-static void inbox_received_callback(DictionaryIterator *iterator, void *context)
-  {
-  
-  //Read first item
-  
-  Tuple *t = dict_read_first(iterator);
-  
-  //For all items
-  
-  while(t != NULL)  {
-    //Which key was received?
-    switch(t->key)  {
-      case KEY_NAME:
-        snprintf(name_buffer, sizeof(name_buffer), "%s", t->value->cstring);
-        break;
-      default:
-        APP_LOG(APP_LOG_LEVEL_ERROR, "Key %d not recognized!", (int) t-> key);
-        break;
-    }
-    
-    // Look for next item
-    
-    t = dict_read_next(iterator);
-  }
+static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
+  APP_LOG(APP_LOG_LEVEL_INFO, "Type sent to Pebble JS");
 }
+
 
 void show_window1(void) {
   
   //register callbacks
   
-  app_message_register_inbox_received(inbox_received_callback);
+  app_message_register_outbox_sent(outbox_sent_callback);
   
   //open appmessage
   
