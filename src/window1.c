@@ -1,13 +1,13 @@
 #include <pebble.h>
 #include "window1.h"
 #include "window2.h"
+#include "loading.h"
 
 static Window *s_window1;
 static TextLayer *s_textlayer;
 static SimpleMenuLayer *s_menu;
 
-#define KEY_NAME 0
-#define KEY_TYPE 1
+#define KEY_TYPE 0
 
 #define NUM_MENU_SECTIONS 1
 #define NUM_MENU_ITEMS 2
@@ -25,7 +25,7 @@ static void menu_select_callback1(int index, void *ctx)
     dict_write_tuplet(iter, &type_tuple);
     dict_write_end(iter);
     app_message_outbox_send();
-    show_window2();
+    show_loading();
 
 }
 
@@ -38,7 +38,7 @@ static void menu_select_callback2(int index, void *ctx)
     dict_write_tuplet(iter, &type_tuple);
     dict_write_end(iter);
     app_message_outbox_send();
-    show_window2();
+    show_loading();
 }
   
 static void window1_load(Window *window) 

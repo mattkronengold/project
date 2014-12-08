@@ -18,7 +18,7 @@ function locationSuccess(pos)  {
       pos.coords.latitude + "," + pos.coords.longitude + 
       "&radius=500&types=" + type + "&key=AIzaSyAdjwtsTRvZmiPden6haSVlEdIvlQaDmQg";
   
-  console.log(url);
+  //console.log(url);
   
   //Send Request to Google
   
@@ -28,18 +28,44 @@ function locationSuccess(pos)  {
               // responseText contains a JSON object with places
               
               var json = JSON.parse(responseText);
-              console.log(JSON.parse(responseText));
-              
               
               //Log Name
               
-              var name = json.results[0].name;
-              console.log("Name is " + name);
+              var k = 0;
+              var numplaces = 0;
               
-
-  
+              var name = [];
+              
+              while(json.results[k])
+                {
+                  //name += ("," + json.results[k].name);
+                  name.push(json.results[k].name);
+                  console.log("Push Name: " + json.results[k].name);
+                  k++;  
+                }
+              
+              numplaces = k;
+              
+              while(k < 10)
+                {
+                  name.push("UNDEFINED");
+                  console.log("Push Undefined");
+                  k++;
+                }
+              
   var dictionary = {
-  "KEY_NAME" : name
+      "KEY_NAME1" : name[0],
+      "KEY_NAME2" : name[1],
+      "KEY_NAME3" : name[2],
+      "KEY_NAME4" : name[3],
+      "KEY_NAME5" : name[4],
+      "KEY_NAME6" : name[5],
+      "KEY_NAME7" : name[6],
+      "KEY_NAME8" : name[7],
+      "KEY_NAME9" : name[8],
+      "KEY_NAME10" : name[9],
+      "KEY_NUM_PLACES" : numplaces,
+
 };
   
   //Send to Pebble
@@ -74,7 +100,7 @@ function getPlaces()  {
 Pebble.addEventListener('appmessage',
   function(e) {
     console.log("PebbleKit JS has received message.");
-    console.log(JSON.stringify(e.payload.KEY_TYPE));
+    //console.log(JSON.stringify(e.payload.KEY_TYPE));
     type = e.payload.KEY_TYPE;
     console.log("Type is: " + type);  
     getPlaces();

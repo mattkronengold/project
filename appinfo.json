@@ -1,7 +1,17 @@
 {
     "appKeys": {
-        "KEY_NAME": 0,
-        "KEY_TYPE": 1
+        "KEY_NAME1": 1,
+        "KEY_NAME10": 10,
+        "KEY_NAME2": 2,
+        "KEY_NAME3": 3,
+        "KEY_NAME4": 4,
+        "KEY_NAME5": 5,
+        "KEY_NAME6": 6,
+        "KEY_NAME7": 7,
+        "KEY_NAME8": 8,
+        "KEY_NAME9": 9,
+        "KEY_NUM_PLACES": 11,
+        "KEY_TYPE": 0
     },
     "capabilities": [
         "location"
