@@ -111,7 +111,7 @@ Pebble.addEventListener('appmessage',
     console.log("Info Reqeust is: " + info_request);
     console.log("Type is: " + type);  
     
-    /*
+    
     if(e.payload.KEY_TYPE)
       {
       getPlaces();
@@ -121,6 +121,6 @@ Pebble.addEventListener('appmessage',
       {
       getAddress();
       }
-      */
+      
   }
 );
