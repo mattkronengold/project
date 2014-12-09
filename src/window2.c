@@ -1,6 +1,6 @@
 #include <pebble.h>
 #include "window2.h"
-#include "loading.h"
+#include "window3.h"
 
 static Window *s_window2;
 static TextLayer *s_textlayer;
@@ -23,18 +23,25 @@ static int num_places;
 #define KEY_NAME9 9
 #define KEY_NAME10 10
 #define KEY_NUM_PLACES 11
+#define KEY_INFO 12
 
-  /*
 static void menu_select_callback(int index, void *ctx)
 {
-  menu_items[index].title = "Selected";
-  layer_mark_dirty(simple_menu_layer_get_layer(s_menu));
+    menu_items[index].title = "Loading Address";
+    layer_mark_dirty(simple_menu_layer_get_layer(s_menu));
+    
+    Tuplet type_tuple =  TupletInteger(KEY_INFO, index);
+    DictionaryIterator *iter;
+    app_message_outbox_begin(&iter);
+    dict_write_tuplet(iter, &type_tuple);
+    dict_write_end(iter);
+    app_message_outbox_send();
+    show_window3();
 }
-*/
 
 static void window2_load(Window *window) 
 {  
-   APP_LOG(APP_LOG_LEVEL_INFO, "Show Text Layer");
+   //APP_LOG(APP_LOG_LEVEL_INFO, "Show Text Layer");
   // s_textlayer
   
   s_textlayer = text_layer_create(GRect(3, 1, 140, 29));
@@ -47,24 +54,34 @@ static void window2_load(Window *window)
   
   int k = 0;
   
-   APP_LOG(APP_LOG_LEVEL_INFO, "Create Menu Items");
-  //while(k < num_places)
-    //{
+   //APP_LOG(APP_LOG_LEVEL_INFO, "Create Menu Items");
+  
+  menu_items[k] = (SimpleMenuItem){
+        .title = "Loading...",
+        .callback = menu_select_callback,
+  };
+  
+  k++;
+  
+  while(k < 10)
+    {
       menu_items[k] = (SimpleMenuItem){
-        .title = name_buffer[k],
+        .title = "",
+        .callback = menu_select_callback,
   };
     k++;
-  //}
+  }
   
-   APP_LOG(APP_LOG_LEVEL_INFO, "Create Menu Sections");
+   //APP_LOG(APP_LOG_LEVEL_INFO, "Create Menu Sections");
+  
   menu_sections[0] = (SimpleMenuSection){
     .num_items = k,
     .items = menu_items,
   };
- APP_LOG(APP_LOG_LEVEL_INFO, "Create Menu");
+ //APP_LOG(APP_LOG_LEVEL_INFO, "Create Menu");
   s_menu = simple_menu_layer_create(GRect(0, 35, 144, 117), window, menu_sections, NUM_MENU_SECTIONS, NULL);
   
-   APP_LOG(APP_LOG_LEVEL_INFO, "Show Menu");
+   //APP_LOG(APP_LOG_LEVEL_INFO, "Show Menu");
   layer_add_child(window_get_root_layer(window), simple_menu_layer_get_layer(s_menu));
   
 }
@@ -76,8 +93,6 @@ static void window2_unload(Window *window)
 }
 
 void show_window2(void) {
-  
-  
   // Create main Window element and assign to pointer
   s_window2 = window_create();
 
@@ -91,14 +106,34 @@ void show_window2(void) {
   window_stack_push(s_window2, true);
 }
 
-void hide_window2(void) {
+void deinit_window2(void) {
   
-  window_stack_remove(s_window2, true);
+  window_destroy(s_window2);
 }
 
+void add_items(void)
+{
+  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Method Called");
+  int k = 0;
+  
+  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Now renaming menu items");
+  
+  while(k < num_places)
+  {
+        menu_items[k].title = name_buffer[k];
+        layer_mark_dirty(simple_menu_layer_get_layer(s_menu));
+    k++;
+  }
+  
+}
+
+void inbox_dropped_callback(AppMessageResult reason, void *context) {
+  APP_LOG(APP_LOG_LEVEL_ERROR, "Message dropped!");
+}
+ 
 void inbox_received_callback(DictionaryIterator *iterator, void *context)
   {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Message Received");
+  APP_LOG(APP_LOG_LEVEL_INFO, "Message Received");
 
   //Read first item
   
@@ -113,21 +148,22 @@ void inbox_received_callback(DictionaryIterator *iterator, void *context)
     switch(t->key)  {
       case KEY_NUM_PLACES:
         num_places = (int)t->value->int32;
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "Num Places Received: %d", num_places);
         break;
       default:
         snprintf(name_buffer[index], sizeof(name_buffer[index]), "%s", t->value->cstring);
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Name Received: %s", name_buffer[index]);
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "Name Received: %s", name_buffer[index]);
+        index++;
         break;
     }
 
     // Look for next item
     
     t = dict_read_next(iterator);
-    
-    index++;
   }
   
-  APP_LOG(APP_LOG_LEVEL_INFO, "About to show window2");
-  //APP_LOG(APP_LOG_LEVEL_INFO, "Number of names = %d", num_places);
-  next_screen();
+  //Rename Menu Items
+  
+  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Calling Method");
+  add_items();
 }

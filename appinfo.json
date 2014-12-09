@@ -1,5 +1,6 @@
 {
     "appKeys": {
+        "KEY_INFO": 12,
         "KEY_NAME1": 1,
         "KEY_NAME10": 10,
         "KEY_NAME2": 2,

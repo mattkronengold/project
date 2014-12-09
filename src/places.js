@@ -1,4 +1,5 @@
 var type;
+var info_request;
 
 var xhrRequest = function (url, type, callback) {
   var xhr = new XMLHttpRequest();
@@ -16,9 +17,9 @@ function locationSuccess(pos)  {
   
   var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
       pos.coords.latitude + "," + pos.coords.longitude + 
-      "&radius=500&types=" + type + "&key=AIzaSyAdjwtsTRvZmiPden6haSVlEdIvlQaDmQg";
+      "&radius=500&key=AIzaSyAdjwtsTRvZmiPden6haSVlEdIvlQaDmQg";
   
-  //console.log(url);
+  //console.log("URL: " + url);
   
   //Send Request to Google
   
@@ -36,11 +37,11 @@ function locationSuccess(pos)  {
               
               var name = [];
               
-              while(json.results[k])
+              while(json.results[k] && k < 10)
                 {
                   //name += ("," + json.results[k].name);
                   name.push(json.results[k].name);
-                  console.log("Push Name: " + json.results[k].name);
+                  //console.log("Push Name: " + json.results[k].name);
                   k++;  
                 }
               
@@ -49,7 +50,7 @@ function locationSuccess(pos)  {
               while(k < 10)
                 {
                   name.push("UNDEFINED");
-                  console.log("Push Undefined");
+                  //console.log("Push Undefined");
                   k++;
                 }
               
@@ -95,14 +96,31 @@ function getPlaces()  {
   );
 }
 
+function getAddress()
+{
+  console.log("Sending Address");
+}
+
 // Listen for Type to be received
 
 Pebble.addEventListener('appmessage',
   function(e) {
     console.log("PebbleKit JS has received message.");
-    //console.log(JSON.stringify(e.payload.KEY_TYPE));
     type = e.payload.KEY_TYPE;
+    info_request = e.payload.KEY_INFO;
+    console.log("Info Reqeust is: " + info_request);
     console.log("Type is: " + type);  
-    getPlaces();
+    
+    /*
+    if(e.payload.KEY_TYPE)
+      {
+      getPlaces();
+      }
+    
+    if(e.payload.KEY_INFO)
+      {
+      getAddress();
+      }
+      */
   }
 );

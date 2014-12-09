@@ -1,7 +1,7 @@
 #include <pebble.h>
 #include "window1.h"
 #include "window2.h"
-#include "loading.h"
+#include "window3.h"
 
 static Window *s_window1;
 static TextLayer *s_textlayer;
@@ -25,7 +25,7 @@ static void menu_select_callback1(int index, void *ctx)
     dict_write_tuplet(iter, &type_tuple);
     dict_write_end(iter);
     app_message_outbox_send();
-    show_loading();
+    show_window2();
 
 }
 
@@ -38,7 +38,7 @@ static void menu_select_callback2(int index, void *ctx)
     dict_write_tuplet(iter, &type_tuple);
     dict_write_end(iter);
     app_message_outbox_send();
-    show_loading();
+    show_window2();
 }
   
 static void window1_load(Window *window) 
@@ -96,7 +96,7 @@ void show_window1(void) {
   window_stack_push(s_window1, true);
 }
 
-void hide_window1(void) {
-  
-  window_stack_remove(s_window1, true);
+void deinit_window1(void) 
+{
+  window_destroy(s_window1);
 }
