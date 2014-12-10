@@ -1,5 +1,6 @@
 var type;
 var info_request;
+var json;
 
 var xhrRequest = function (url, type, callback) {
   var xhr = new XMLHttpRequest();
@@ -17,9 +18,9 @@ function locationSuccess(pos)  {
   
   var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
       pos.coords.latitude + "," + pos.coords.longitude + 
-      "&radius=500&key=AIzaSyAdjwtsTRvZmiPden6haSVlEdIvlQaDmQg";
+      "&rankby=distance&types=" + type + "&key=AIzaSyAdjwtsTRvZmiPden6haSVlEdIvlQaDmQg";
   
-  //console.log("URL: " + url);
+  console.log("URL1: " + url);
   
   //Send Request to Google
   
@@ -28,7 +29,7 @@ function locationSuccess(pos)  {
               
               // responseText contains a JSON object with places
               
-              var json = JSON.parse(responseText);
+              json = JSON.parse(responseText);
               
               //Log Name
               
@@ -99,6 +100,46 @@ function getPlaces()  {
 function getAddress()
 {
   console.log("Sending Address");
+  
+  var placeID = json.results[info_request].place_id;
+  //construct URL
+  
+  var url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeID + "&key=AIzaSyAdjwtsTRvZmiPden6haSVlEdIvlQaDmQg";
+  
+  //console.log("URL2: " + url);
+  
+  
+  //Send Request to Google
+  
+  xhrRequest(url, 'GET',
+            function(responseText)  {
+              
+              // responseText contains a JSON object with places
+              
+              var json2 = JSON.parse(responseText);
+              
+              //Log Name
+              
+              var address = json2.result.formatted_address;
+              //console.log(address);
+              
+  var dictionary = {
+      "KEY_ADDRESS" : address,
+    };
+  
+  //Send to Pebble
+              
+Pebble.sendAppMessage(dictionary,
+                     function(e)  {
+                       console.log("Info sent to Pebble!");
+                     },
+                     function(e)  {
+                       console.log("Error sending info");
+                     }
+                     );
+}
+                         
+      );
 }
 
 // Listen for Type to be received
@@ -108,8 +149,9 @@ Pebble.addEventListener('appmessage',
     console.log("PebbleKit JS has received message.");
     type = e.payload.KEY_TYPE;
     info_request = e.payload.KEY_INFO;
-    console.log("Info Reqeust is: " + info_request);
-    console.log("Type is: " + type);  
+    info_request--;
+    //console.log("Info Reqeust is: " + info_request);
+    //console.log("Type is: " + type);  
     
     
     if(e.payload.KEY_TYPE)

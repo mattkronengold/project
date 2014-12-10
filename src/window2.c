@@ -11,6 +11,7 @@ static SimpleMenuSection menu_sections[NUM_MENU_SECTIONS];
 static SimpleMenuItem menu_items[NUM_MENU_ITEMS];
 static char name_buffer[10][250];
 static int num_places;
+static char address[250];
 
 #define KEY_NAME1 1
 #define KEY_NAME2 2
@@ -24,13 +25,15 @@ static int num_places;
 #define KEY_NAME10 10
 #define KEY_NUM_PLACES 11
 #define KEY_INFO 12
+#define KEY_ADDRESS 13
 
 static void menu_select_callback(int index, void *ctx)
 {
+    int sendIndex = index + 1;
     menu_items[index].title = "Loading Address";
     layer_mark_dirty(simple_menu_layer_get_layer(s_menu));
     
-    Tuplet type_tuple =  TupletInteger(KEY_INFO, index);
+    Tuplet type_tuple =  TupletInteger(KEY_INFO, sendIndex);
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
     dict_write_tuplet(iter, &type_tuple);
@@ -113,6 +116,7 @@ void deinit_window2(void) {
 
 void add_items(void)
 {
+  /*
   //APP_LOG(APP_LOG_LEVEL_DEBUG, "Method Called");
   int k = 0;
   
@@ -124,6 +128,47 @@ void add_items(void)
         layer_mark_dirty(simple_menu_layer_get_layer(s_menu));
     k++;
   }
+  */
+  
+  
+  // s_menu
+  
+  simple_menu_layer_destroy(s_menu);
+  
+  int k = 0;
+  
+   //APP_LOG(APP_LOG_LEVEL_INFO, "Create Menu Items");
+  
+  /*
+  menu_items[k] = (SimpleMenuItem){
+        .title = "Loading...",
+        .callback = menu_select_callback,
+  };
+  
+  k++;
+  */
+  
+  while(k < num_places)
+    {
+      menu_items[k] = (SimpleMenuItem){
+        .title = name_buffer[k],
+        .callback = menu_select_callback,
+  };
+    k++;
+  }
+  
+   //APP_LOG(APP_LOG_LEVEL_INFO, "Create Menu Sections");
+  
+  menu_sections[0] = (SimpleMenuSection){
+    .num_items = k,
+    .items = menu_items,
+  };
+ //APP_LOG(APP_LOG_LEVEL_INFO, "Create Menu");
+  s_menu = simple_menu_layer_create(GRect(0, 35, 144, 117), s_window2, menu_sections, NUM_MENU_SECTIONS, NULL);
+  
+   //APP_LOG(APP_LOG_LEVEL_INFO, "Show Menu");
+  layer_add_child(window_get_root_layer(s_window2), simple_menu_layer_get_layer(s_menu));
+  
   
 }
 
@@ -139,7 +184,7 @@ void inbox_received_callback(DictionaryIterator *iterator, void *context)
   
   Tuple *t = dict_read_first(iterator);
   
-  int index = 0;
+  int keyIndex = 0;
   
   //For all items
   
@@ -150,10 +195,16 @@ void inbox_received_callback(DictionaryIterator *iterator, void *context)
         num_places = (int)t->value->int32;
         //APP_LOG(APP_LOG_LEVEL_DEBUG, "Num Places Received: %d", num_places);
         break;
+      case KEY_ADDRESS:
+        snprintf(address, sizeof(address), "%s", t->value->cstring);
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "Address Received: %s", address);
+        window3_add_text(address);
+      break;
       default:
-        snprintf(name_buffer[index], sizeof(name_buffer[index]), "%s", t->value->cstring);
-        //APP_LOG(APP_LOG_LEVEL_DEBUG, "Name Received: %s", name_buffer[index]);
-        index++;
+        keyIndex = (t->key)-1;
+        snprintf(name_buffer[keyIndex], sizeof(name_buffer[keyIndex]), "%s", t->value->cstring);
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "Index Received: %d", keyIndex);
+        //index++;
         break;
     }
 
