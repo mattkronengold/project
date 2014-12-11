@@ -9,9 +9,9 @@ static SimpleMenuLayer *s_menu;
 #define NUM_MENU_ITEMS 10
 static SimpleMenuSection menu_sections[NUM_MENU_SECTIONS];
 static SimpleMenuItem menu_items[NUM_MENU_ITEMS];
-static char name_buffer[10][250];
-static int num_places;
-static char address[250];
+//static char name_buffer[10][250];
+//static int num_places;
+//static char address[250];
 
 #define KEY_NAME1 1
 #define KEY_NAME2 2
@@ -114,40 +114,12 @@ void deinit_window2(void) {
   window_destroy(s_window2);
 }
 
-void add_items(void)
+void add_items(char name_buffer[10][250], int num_places)
 {
-  /*
-  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Method Called");
-  int k = 0;
-  
-  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Now renaming menu items");
-  
-  while(k < num_places)
-  {
-        menu_items[k].title = name_buffer[k];
-        layer_mark_dirty(simple_menu_layer_get_layer(s_menu));
-    k++;
-  }
-  */
-  
-  
-  // s_menu
-  
   simple_menu_layer_destroy(s_menu);
   
   int k = 0;
-  
-   //APP_LOG(APP_LOG_LEVEL_INFO, "Create Menu Items");
-  
-  /*
-  menu_items[k] = (SimpleMenuItem){
-        .title = "Loading...",
-        .callback = menu_select_callback,
-  };
-  
-  k++;
-  */
-  
+
   while(k < num_places)
     {
       menu_items[k] = (SimpleMenuItem){
@@ -163,58 +135,10 @@ void add_items(void)
     .num_items = k,
     .items = menu_items,
   };
+  
  //APP_LOG(APP_LOG_LEVEL_INFO, "Create Menu");
   s_menu = simple_menu_layer_create(GRect(0, 35, 144, 117), s_window2, menu_sections, NUM_MENU_SECTIONS, NULL);
   
    //APP_LOG(APP_LOG_LEVEL_INFO, "Show Menu");
   layer_add_child(window_get_root_layer(s_window2), simple_menu_layer_get_layer(s_menu));
-  
-  
-}
-
-void inbox_dropped_callback(AppMessageResult reason, void *context) {
-  APP_LOG(APP_LOG_LEVEL_ERROR, "Message dropped!");
-}
- 
-void inbox_received_callback(DictionaryIterator *iterator, void *context)
-  {
-  APP_LOG(APP_LOG_LEVEL_INFO, "Message Received");
-
-  //Read first item
-  
-  Tuple *t = dict_read_first(iterator);
-  
-  int keyIndex = 0;
-  
-  //For all items
-  
-  while(t != NULL)  {
-    
-    switch(t->key)  {
-      case KEY_NUM_PLACES:
-        num_places = (int)t->value->int32;
-        //APP_LOG(APP_LOG_LEVEL_DEBUG, "Num Places Received: %d", num_places);
-        break;
-      case KEY_ADDRESS:
-        snprintf(address, sizeof(address), "%s", t->value->cstring);
-        //APP_LOG(APP_LOG_LEVEL_DEBUG, "Address Received: %s", address);
-        window3_add_text(address);
-      break;
-      default:
-        keyIndex = (t->key)-1;
-        snprintf(name_buffer[keyIndex], sizeof(name_buffer[keyIndex]), "%s", t->value->cstring);
-        //APP_LOG(APP_LOG_LEVEL_DEBUG, "Index Received: %d", keyIndex);
-        //index++;
-        break;
-    }
-
-    // Look for next item
-    
-    t = dict_read_next(iterator);
-  }
-  
-  //Rename Menu Items
-  
-  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Calling Method");
-  add_items();
 }

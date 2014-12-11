@@ -3,6 +3,77 @@
 #include "window2.h"
 #include "window3.h"
   
+static char name_buffer[10][250];
+static int num_places;
+static char address[250];
+
+#define KEY_TYPE 0
+#define KEY_NAME1 1
+#define KEY_NAME2 2
+#define KEY_NAME3 3
+#define KEY_NAME4 4
+#define KEY_NAME5 5
+#define KEY_NAME6 6
+#define KEY_NAME7 7
+#define KEY_NAME8 8
+#define KEY_NAME9 9
+#define KEY_NAME10 10
+#define KEY_NUM_PLACES 11
+#define KEY_INFO 12
+#define KEY_ADDRESS 13
+ 
+static void outbox_sent_callback(DictionaryIterator *iterator, void *context) 
+{
+  APP_LOG(APP_LOG_LEVEL_INFO, "Message sent to Pebble JS");
+}
+
+void inbox_dropped_callback(AppMessageResult reason, void *context) {
+  APP_LOG(APP_LOG_LEVEL_ERROR, "Message dropped!");
+}
+ 
+void inbox_received_callback(DictionaryIterator *iterator, void *context)
+  {
+  APP_LOG(APP_LOG_LEVEL_INFO, "Message Received");
+
+  //Read first item
+  
+  Tuple *t = dict_read_first(iterator);
+  
+  int keyIndex = 0;
+  
+  //For all items
+  
+  while(t != NULL)  {
+    
+    switch(t->key)  {
+      case KEY_NUM_PLACES:
+        num_places = (int)t->value->int32;
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "Num Places Received: %d", num_places);
+        break;
+      case KEY_ADDRESS:
+        snprintf(address, sizeof(address), "%s", t->value->cstring);
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "Address Received: %s", address);
+        window3_add_text(address);
+      break;
+      default:
+        keyIndex = (t->key)-1;
+        snprintf(name_buffer[keyIndex], sizeof(name_buffer[keyIndex]), "%s", t->value->cstring);
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "Index Received: %d", keyIndex);
+        //index++;
+        break;
+    }
+
+    // Look for next item
+    
+    t = dict_read_next(iterator);
+  }
+  
+  //Rename Menu Items
+  
+  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Calling Method");
+  add_items(name_buffer,num_places);
+}
+
 static void init()
 {
   //register callbacks

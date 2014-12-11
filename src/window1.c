@@ -7,6 +7,7 @@ static Window *s_window1;
 static TextLayer *s_textlayer;
 static SimpleMenuLayer *s_menu;
 
+
 #define KEY_TYPE 0
 
 #define NUM_MENU_SECTIONS 1
@@ -18,36 +19,9 @@ static SimpleMenuItem menu_items[NUM_MENU_ITEMS];
 
 static char menu_titles[NUM_MENU_ITEMS][250];
 
-static void menu_select_callback1(int index, void *ctx)
-{
-
-    Tuplet type_tuple =  TupletCString(KEY_TYPE, "restaurant");
-    DictionaryIterator *iter;
-    app_message_outbox_begin(&iter);
-    dict_write_tuplet(iter, &type_tuple);
-    dict_write_end(iter);
-    app_message_outbox_send();
-    show_window2();
-
-}
-
 static void menu_select_callback_all(int index, void *ctx)
 {
-
     Tuplet type_tuple =  TupletCString(KEY_TYPE, menu_titles[index]);
-    DictionaryIterator *iter;
-    app_message_outbox_begin(&iter);
-    dict_write_tuplet(iter, &type_tuple);
-    dict_write_end(iter);
-    app_message_outbox_send();
-    show_window2();
-
-}
-
-static void menu_select_callback2(int index, void *ctx)
-{
-  
-    Tuplet type_tuple =  TupletCString(KEY_TYPE, "gas_station");
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
     dict_write_tuplet(iter, &type_tuple);
@@ -66,21 +40,8 @@ static void window1_load(Window *window)
   layer_add_child(window_get_root_layer(window), (Layer *)s_textlayer);
 
   // s_menu
+  
   int num_a_items = 0;
-  
-  snprintf(menu_titles[num_a_items], sizeof(menu_titles[num_a_items]), "restaurant");
-    
-  menu_items[num_a_items++] = (SimpleMenuItem){
-    .title = "Restaurant",
-    .callback = menu_select_callback_all,
-  };
-  
-  snprintf(menu_titles[num_a_items], sizeof(menu_titles[num_a_items]), "gas_station");
-  
-  menu_items[num_a_items++] = (SimpleMenuItem){
-    .title = "Gas Station",
-    .callback = menu_select_callback_all,
-  };
   
   snprintf(menu_titles[num_a_items], sizeof(menu_titles[num_a_items]), "airport");
   
@@ -117,6 +78,13 @@ static void window1_load(Window *window)
     .callback = menu_select_callback_all,
   };
   
+  snprintf(menu_titles[num_a_items], sizeof(menu_titles[num_a_items]), "gas_station");
+  
+  menu_items[num_a_items++] = (SimpleMenuItem){
+    .title = "Gas Station",
+    .callback = menu_select_callback_all,
+  };
+  
   snprintf(menu_titles[num_a_items], sizeof(menu_titles[num_a_items]), "gym");
   
    menu_items[num_a_items++] = (SimpleMenuItem){
@@ -145,6 +113,13 @@ static void window1_load(Window *window)
     .callback = menu_select_callback_all,
   };
   
+  snprintf(menu_titles[num_a_items], sizeof(menu_titles[num_a_items]), "restaurant");
+    
+  menu_items[num_a_items++] = (SimpleMenuItem){
+    .title = "Restaurant",
+    .callback = menu_select_callback_all,
+  };
+  
   snprintf(menu_titles[num_a_items], sizeof(menu_titles[num_a_items]), "synagogue");
   
    menu_items[num_a_items++] = (SimpleMenuItem){
@@ -166,11 +141,6 @@ static void window1_unload(Window *window)
   text_layer_destroy(s_textlayer);
   simple_menu_layer_destroy(s_menu);
 }
-
-void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
-  APP_LOG(APP_LOG_LEVEL_INFO, "Message sent to Pebble JS");
-}
-
 
 void show_window1(void) {  
   // Create main Window element and assign to pointer
