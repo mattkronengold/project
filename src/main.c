@@ -33,6 +33,8 @@ void inbox_dropped_callback(AppMessageResult reason, void *context) {
  
 void inbox_received_callback(DictionaryIterator *iterator, void *context)
   {
+  static int add = 0;
+  
   APP_LOG(APP_LOG_LEVEL_INFO, "Message Received");
 
   //Read first item
@@ -58,6 +60,7 @@ void inbox_received_callback(DictionaryIterator *iterator, void *context)
       default:
         keyIndex = (t->key)-1;
         snprintf(name_buffer[keyIndex], sizeof(name_buffer[keyIndex]), "%s", t->value->cstring);
+        add = 1;
         //APP_LOG(APP_LOG_LEVEL_DEBUG, "Index Received: %d", keyIndex);
         //index++;
         break;
@@ -71,7 +74,11 @@ void inbox_received_callback(DictionaryIterator *iterator, void *context)
   //Rename Menu Items
   
   //APP_LOG(APP_LOG_LEVEL_DEBUG, "Calling Method");
-  add_items(name_buffer,num_places);
+  if(add ==1)
+  {
+    add_items(name_buffer,num_places);
+    add = 0;
+  }
 }
 
 static void init()

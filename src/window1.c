@@ -2,21 +2,18 @@
 #include "window1.h"
 #include "window2.h"
 #include "window3.h"
+#include "loading.h"
 
 static Window *s_window1;
 static TextLayer *s_textlayer;
 static SimpleMenuLayer *s_menu;
 
-
 #define KEY_TYPE 0
 
 #define NUM_MENU_SECTIONS 1
 #define NUM_MENU_ITEMS 12
-
 static SimpleMenuSection menu_sections[NUM_MENU_SECTIONS];
-
 static SimpleMenuItem menu_items[NUM_MENU_ITEMS];
-
 static char menu_titles[NUM_MENU_ITEMS][250];
 
 static void menu_select_callback_all(int index, void *ctx)
@@ -27,12 +24,11 @@ static void menu_select_callback_all(int index, void *ctx)
     dict_write_tuplet(iter, &type_tuple);
     dict_write_end(iter);
     app_message_outbox_send();
-    show_window2();
+    show_loading();
 }
   
 static void window1_load(Window *window) 
 {  
-  
   // s_textlayer
   s_textlayer = text_layer_create(GRect(3, 1, 140, 29));
   text_layer_set_text(s_textlayer, "Please Select a Type of Location");
@@ -40,7 +36,6 @@ static void window1_load(Window *window)
   layer_add_child(window_get_root_layer(window), (Layer *)s_textlayer);
 
   // s_menu
-  
   int num_a_items = 0;
   
   snprintf(menu_titles[num_a_items], sizeof(menu_titles[num_a_items]), "airport");

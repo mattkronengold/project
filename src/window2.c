@@ -1,37 +1,25 @@
 #include <pebble.h>
 #include "window2.h"
 #include "window3.h"
+#include "no_locations.h"
 
 static Window *s_window2;
 static TextLayer *s_textlayer;
 static SimpleMenuLayer *s_menu;
+static char name_buffer[10][250];
+static int num_places;
+
 #define NUM_MENU_SECTIONS 1
 #define NUM_MENU_ITEMS 10
 static SimpleMenuSection menu_sections[NUM_MENU_SECTIONS];
 static SimpleMenuItem menu_items[NUM_MENU_ITEMS];
-//static char name_buffer[10][250];
-//static int num_places;
-//static char address[250];
 
-#define KEY_NAME1 1
-#define KEY_NAME2 2
-#define KEY_NAME3 3
-#define KEY_NAME4 4
-#define KEY_NAME5 5
-#define KEY_NAME6 6
-#define KEY_NAME7 7
-#define KEY_NAME8 8
-#define KEY_NAME9 9
-#define KEY_NAME10 10
-#define KEY_NUM_PLACES 11
 #define KEY_INFO 12
 #define KEY_ADDRESS 13
 
 static void menu_select_callback(int index, void *ctx)
 {
     int sendIndex = index + 1;
-    menu_items[index].title = "Loading Address";
-    layer_mark_dirty(simple_menu_layer_get_layer(s_menu));
     
     Tuplet type_tuple =  TupletInteger(KEY_INFO, sendIndex);
     DictionaryIterator *iter;
@@ -42,9 +30,29 @@ static void menu_select_callback(int index, void *ctx)
     show_window3();
 }
 
+void add_items(char name_bufferx[10][250], int num_placesx)
+{
+  //simple_menu_layer_destroy(s_menu);
+  
+  for(int k = 0; k < 10; k ++)
+    snprintf(name_buffer[k], sizeof(name_buffer[k]), "%s", name_bufferx[k]);
+    //name_buffer[k] = name_bufferx[k];
+  
+  //name_buffer = name_bufferx;
+  num_places = num_placesx;
+  
+  if(num_places == 0)
+    show_no_locations();
+  
+  else
+  {
+    window_stack_pop(false);
+    show_window2();
+  }
+}
+
 static void window2_load(Window *window) 
 {  
-   //APP_LOG(APP_LOG_LEVEL_INFO, "Show Text Layer");
   // s_textlayer
   
   s_textlayer = text_layer_create(GRect(3, 1, 140, 29));
@@ -52,12 +60,30 @@ static void window2_load(Window *window)
   text_layer_set_text_alignment(s_textlayer, GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(window), (Layer *)s_textlayer);
 
+  //s_menu
+  int k = 0;
+
+  while(k < num_places)
+    {
+      menu_items[k] = (SimpleMenuItem){
+        .title = name_buffer[k],
+        .callback = menu_select_callback,
+  };
+    k++;
+  }
+  
+  menu_sections[0] = (SimpleMenuSection){
+    .num_items = k,
+    .items = menu_items,
+  };
+  
+  s_menu = simple_menu_layer_create(GRect(0, 35, 144, 117), s_window2, menu_sections, NUM_MENU_SECTIONS, NULL);
+  
+  layer_add_child(window_get_root_layer(s_window2), simple_menu_layer_get_layer(s_menu));
   
   // s_menu
-  
+  /*
   int k = 0;
-  
-   //APP_LOG(APP_LOG_LEVEL_INFO, "Create Menu Items");
   
   menu_items[k] = (SimpleMenuItem){
         .title = "Loading...",
@@ -75,18 +101,15 @@ static void window2_load(Window *window)
     k++;
   }
   
-   //APP_LOG(APP_LOG_LEVEL_INFO, "Create Menu Sections");
-  
   menu_sections[0] = (SimpleMenuSection){
     .num_items = k,
     .items = menu_items,
   };
- //APP_LOG(APP_LOG_LEVEL_INFO, "Create Menu");
+  
   s_menu = simple_menu_layer_create(GRect(0, 35, 144, 117), window, menu_sections, NUM_MENU_SECTIONS, NULL);
-  
-   //APP_LOG(APP_LOG_LEVEL_INFO, "Show Menu");
+
   layer_add_child(window_get_root_layer(window), simple_menu_layer_get_layer(s_menu));
-  
+  */
 }
 
 static void window2_unload(Window *window) 
@@ -95,7 +118,8 @@ static void window2_unload(Window *window)
   simple_menu_layer_destroy(s_menu);
 }
 
-void show_window2(void) {
+void show_window2(void) 
+{
   // Create main Window element and assign to pointer
   s_window2 = window_create();
 
@@ -109,36 +133,7 @@ void show_window2(void) {
   window_stack_push(s_window2, true);
 }
 
-void deinit_window2(void) {
-  
-  window_destroy(s_window2);
-}
-
-void add_items(char name_buffer[10][250], int num_places)
+void deinit_window2(void) 
 {
-  simple_menu_layer_destroy(s_menu);
-  
-  int k = 0;
-
-  while(k < num_places)
-    {
-      menu_items[k] = (SimpleMenuItem){
-        .title = name_buffer[k],
-        .callback = menu_select_callback,
-  };
-    k++;
-  }
-  
-   //APP_LOG(APP_LOG_LEVEL_INFO, "Create Menu Sections");
-  
-  menu_sections[0] = (SimpleMenuSection){
-    .num_items = k,
-    .items = menu_items,
-  };
-  
- //APP_LOG(APP_LOG_LEVEL_INFO, "Create Menu");
-  s_menu = simple_menu_layer_create(GRect(0, 35, 144, 117), s_window2, menu_sections, NUM_MENU_SECTIONS, NULL);
-  
-   //APP_LOG(APP_LOG_LEVEL_INFO, "Show Menu");
-  layer_add_child(window_get_root_layer(s_window2), simple_menu_layer_get_layer(s_menu));
+  window_destroy(s_window2);
 }
