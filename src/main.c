@@ -104,7 +104,10 @@ static void deinit()
 int main(void) 
 {
   init();
+
   show_window1();
+
   app_event_loop();
+  
   deinit();
 }

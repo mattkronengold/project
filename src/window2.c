@@ -47,6 +47,7 @@ void add_items(char name_bufferx[10][250], int num_placesx)
   else
   {
     window_stack_pop(false);
+    vibes_short_pulse();
     show_window2();
   }
 }

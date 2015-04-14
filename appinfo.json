@@ -13,6 +13,7 @@
         "KEY_NAME8": 8,
         "KEY_NAME9": 9,
         "KEY_NUM_PLACES": 11,
+        "KEY_PHONE": 15,
         "KEY_TYPE": 0
     },
     "capabilities": [
@@ -24,6 +25,7 @@
     "resources": {
         "media": []
     },
+    "sdkVersion": "2",
     "shortName": "Places",
     "uuid": "71f6027c-3a58-4cde-b039-0ae1dc2a9c9f",
     "versionCode": 1,
