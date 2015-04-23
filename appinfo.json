@@ -1,7 +1,7 @@
 {
     "appKeys": {
         "KEY_ADDRESS": 13,
-        "KEY_INFO": 12,
+        "KEY_HOURS": 15,
         "KEY_NAME1": 1,
         "KEY_NAME10": 10,
         "KEY_NAME2": 2,
@@ -13,7 +13,8 @@
         "KEY_NAME8": 8,
         "KEY_NAME9": 9,
         "KEY_NUM_PLACES": 11,
-        "KEY_PHONE": 15,
+        "KEY_PHONE": 14,
+        "KEY_PLACE": 12,
         "KEY_TYPE": 0
     },
     "capabilities": [

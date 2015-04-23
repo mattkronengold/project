@@ -1,11 +1,11 @@
-#include <pebble.h>
+#include "main.h"
 #include "window1.h"
 #include "window2.h"
 #include "window3.h"
   
 static char name_buffer[10][250];
 static int num_places;
-static char address[250];
+
 
 #define KEY_TYPE 0
 #define KEY_NAME1 1
@@ -21,6 +21,8 @@ static char address[250];
 #define KEY_NUM_PLACES 11
 #define KEY_INFO 12
 #define KEY_ADDRESS 13
+#define KEY_PHONE 14
+#define KEY_HOURS 15
  
 static void outbox_sent_callback(DictionaryIterator *iterator, void *context) 
 {
@@ -50,19 +52,27 @@ void inbox_received_callback(DictionaryIterator *iterator, void *context)
     switch(t->key)  {
       case KEY_NUM_PLACES:
         num_places = (int)t->value->int32;
-        //APP_LOG(APP_LOG_LEVEL_DEBUG, "Num Places Received: %d", num_places);
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Num Places Received: %d", num_places);
         break;
       case KEY_ADDRESS:
         snprintf(address, sizeof(address), "%s", t->value->cstring);
-        //APP_LOG(APP_LOG_LEVEL_DEBUG, "Address Received: %s", address);
-        window3_add_text(address);
-      break;
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Address Received: %s", address);
+        //window3_add_text(address);
+        break;
+      case KEY_PHONE:
+        snprintf(phone, sizeof(phone), "%s", t->value->cstring);
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Phone Received: %s", phone);
+        //window3_add_text(address);
+        break;
+      case KEY_HOURS:
+        snprintf(hours, sizeof(hours), "%s", t->value->cstring);
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Hours Received: %s", hours);
+        //window3_add_text(address);
+        break;
       default:
         keyIndex = (t->key)-1;
         snprintf(name_buffer[keyIndex], sizeof(name_buffer[keyIndex]), "%s", t->value->cstring);
         add = 1;
-        //APP_LOG(APP_LOG_LEVEL_DEBUG, "Index Received: %d", keyIndex);
-        //index++;
         break;
     }
 
@@ -71,9 +81,13 @@ void inbox_received_callback(DictionaryIterator *iterator, void *context)
     t = dict_read_next(iterator);
   }
   
+  //Pass info to Window2_5
+  
+  
+  
   //Rename Menu Items
   
-  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Calling Method");
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Calling Add Items");
   if(add ==1)
   {
     add_items(name_buffer,num_places);

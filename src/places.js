@@ -1,5 +1,5 @@
 var type;
-var info_request;
+var location;
 var json;
 
 var xhrRequest = function (url, type, callback) {
@@ -20,7 +20,7 @@ function locationSuccess(pos)  {
       pos.coords.latitude + "," + pos.coords.longitude + 
       "&rankby=distance&types=" + type + "&key=AIzaSyAdjwtsTRvZmiPden6haSVlEdIvlQaDmQg";
   
-  console.log("URL1: " + url);
+  //console.log("URL1: " + url);
   
   //Send Request to Google
   
@@ -97,11 +97,11 @@ function getPlaces()  {
   );
 }
 
-function getAddress()
+function getInfo()
 {
-  console.log("Sending Address");
+  console.log("Sending Info");
   
-  var placeID = json.results[info_request].place_id;
+  var placeID = json.results[location].place_id;
   //construct URL
   
   var url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeID + "&key=AIzaSyAdjwtsTRvZmiPden6haSVlEdIvlQaDmQg";
@@ -118,13 +118,26 @@ function getAddress()
               
               var json2 = JSON.parse(responseText);
               
-              //Log Name
+              // save info
               
               var address = json2.result.formatted_address;
-              //console.log(address);
+              var phone = json2.result.formatted_phone_number;
+              
+             // if(typeof json2.result.opnening_hours.open_now != 'udefined')
+              //  {
+              //var hours = json2.result.opnening_hours.open_now;
+              //  }
+              
+             // else
+              //  {
+              var    hours = "Hours not available";
+            //    }
+              console.log(hours);
               
   var dictionary = {
-      "KEY_ADDRESS" : address,
+    "KEY_ADDRESS" : address,
+    "KEY_PHONE" : phone,
+    "KEY_HOURS" : hours,
     };
   
   //Send to Pebble
@@ -142,26 +155,21 @@ Pebble.sendAppMessage(dictionary,
       );
 }
 
-// Listen for Type to be received
-
 Pebble.addEventListener('appmessage',
   function(e) {
     console.log("PebbleKit JS has received message.");
     type = e.payload.KEY_TYPE;
-    info_request = e.payload.KEY_INFO;
-    info_request--;
-    //console.log("Info Reqeust is: " + info_request);
-    //console.log("Type is: " + type);  
-    
-    
+    location = e.payload.KEY_PLACE;
+    location--;
+
     if(e.payload.KEY_TYPE)
       {
       getPlaces();
       }
     
-    if(e.payload.KEY_INFO)
+    if(e.payload.KEY_PLACE)
       {
-      getAddress();
+      getInfo();
       }
       
   }

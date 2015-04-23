@@ -7,9 +7,10 @@ static GFont s_res_gothic_18_bold;
 static TextLayer *s_textlayer_1;
 static TextLayer *s_textlayer_2;
 
-void window3_add_text(char address[250])
+void window3_add_text(char title[250], char info[250])
 {
-  text_layer_set_text(s_textlayer_2,address); 
+  text_layer_set_text(s_textlayer_1,title);
+  text_layer_set_text(s_textlayer_2,info);
 }
 
 static void window3_load(Window *window) 
@@ -19,7 +20,7 @@ static void window3_load(Window *window)
   
   // s_textlayer_1
   s_textlayer_1 = text_layer_create(GRect(3, 1, 140, 29));
-  text_layer_set_text(s_textlayer_1, "Address");
+  text_layer_set_text(s_textlayer_1, "");
   text_layer_set_text_alignment(s_textlayer_1, GTextAlignmentCenter);
   text_layer_set_font(s_textlayer_1, s_res_gothic_24_bold);
   layer_add_child(window_get_root_layer(window), (Layer *)s_textlayer_1);
