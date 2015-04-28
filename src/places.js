@@ -14,13 +14,15 @@ var xhrRequest = function (url, type, callback) {
 
 function locationSuccess(pos)  {
   
+   console.log("Retrieving names from Google API.");
+  
   //construct URL
   
   var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
       pos.coords.latitude + "," + pos.coords.longitude + 
       "&rankby=distance&types=" + type + "&key=AIzaSyAdjwtsTRvZmiPden6haSVlEdIvlQaDmQg";
   
-  console.log("URL1: " + url);
+  //console.log("URL1: " + url);
   
   //Send Request to Google
   
@@ -40,9 +42,7 @@ function locationSuccess(pos)  {
               
               while(json.results[k] && k < 10)
                 {
-                  //name += ("," + json.results[k].name);
                   name.push(json.results[k].name);
-                  //console.log("Push Name: " + json.results[k].name);
                   k++;  
                 }
               
@@ -51,7 +51,6 @@ function locationSuccess(pos)  {
               while(k < 10)
                 {
                   name.push("UNDEFINED");
-                  //console.log("Push Undefined");
                   k++;
                 }
               
@@ -73,10 +72,10 @@ function locationSuccess(pos)  {
   //Send to Pebble
 Pebble.sendAppMessage(dictionary,
                      function(e)  {
-                       console.log("Info sent to Pebble!");
+                       console.log("Names sent to Pebble!");
                      },
                      function(e)  {
-                       console.log("Error sending info");
+                       console.log("Error sending names");
                      }
                      );
 }
@@ -99,14 +98,14 @@ function getPlaces()  {
 
 function getInfo()
 {
-  console.log("Sending Info");
+  console.log("Retrieving details from Google API");
   
   var placeID = json.results[location].place_id;
   //construct URL
   
   var url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeID + "&key=AIzaSyAdjwtsTRvZmiPden6haSVlEdIvlQaDmQg";
   
-  console.log("URL2: " + url);
+  //console.log("URL2: " + url);
   
   
   //Send Request to Google
@@ -124,28 +123,24 @@ function getInfo()
               var phone = json2.result.formatted_phone_number;
               
               var hours;
-
-              /*
-              console.log(json2.result.opening_hours.open_now);
               
-             if(json2.result.opening_hours.open_now.valueOf() === "true".valueOf())
+              hours = "open_";
+              
+              try
                 {
-                  hours = "Open Now";
+                  hours += json2.result.opening_hours.open_now.valueOf();
                 }
               
-             else
+              catch(err)
                 {
-                  hours = "Closed";
+                  hours = "no_hours";
                 }
+                
               
-              
-              */
-              hours = json2.result.opening_hours.open_now.valueOf();
-              hours += "c";
+              console.log("Sending Details:");
               console.log(hours);
               console.log(address);
               console.log(phone);
-              
               
   var dictionary = {
     "KEY_ADDRESS" : address,
@@ -157,10 +152,10 @@ function getInfo()
               
 Pebble.sendAppMessage(dictionary,
                      function(e)  {
-                       console.log("Info sent to Pebble!");
+                       console.log("Details sent to Pebble!");
                      },
                      function(e)  {
-                       console.log("Error sending info");
+                       console.log("Error sending details");
                      }
                      );
 }

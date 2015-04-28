@@ -52,22 +52,19 @@ void inbox_received_callback(DictionaryIterator *iterator, void *context)
     switch(t->key)  {
       case KEY_NUM_PLACES:
         num_places = (int)t->value->int32;
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Num Places Received: %d", num_places);
+        APP_LOG(APP_LOG_LEVEL_INFO, "Num Places Received: %d", num_places);
         break;
       case KEY_ADDRESS:
         snprintf(address, sizeof(address), "%s", t->value->cstring);
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Address Received: %s", address);
-        //window3_add_text(address);
+        APP_LOG(APP_LOG_LEVEL_INFO, "Address Received: %s", address);
         break;
       case KEY_PHONE:
         snprintf(phone, sizeof(phone), "%s", t->value->cstring);
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Phone Received: %s", phone);
-        //window3_add_text(address);
+        APP_LOG(APP_LOG_LEVEL_INFO, "Phone Received: %s", phone);
         break;
       case KEY_HOURS:
         snprintf(hours, sizeof(hours), "%s", t->value->cstring);
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Hours Received: %s", hours);
-        //window3_add_text(address);
+        APP_LOG(APP_LOG_LEVEL_INFO, "Hours Received: %s", hours);
         break;
       default:
         keyIndex = (t->key)-1;
@@ -90,7 +87,7 @@ void inbox_received_callback(DictionaryIterator *iterator, void *context)
  
   if(add ==1)
   {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Calling Add Items");
+    APP_LOG(APP_LOG_LEVEL_INFO, "Populating Menu with Names");
     add_items(name_buffer,num_places);
     add = 0;
   }

@@ -6,9 +6,6 @@
 static Window *s_window2_5;
 static TextLayer *s_textlayer;
 static SimpleMenuLayer *s_menu;
-//static char address[250];
-//static char phone[250];
-//static char hours[250];
 
 #define NUM_MENU_SECTIONS 1
 #define NUM_MENU_ITEMS 3
@@ -17,7 +14,6 @@ static SimpleMenuItem menu_items[NUM_MENU_ITEMS];
 
 static void menu_select_callback(int index, void *ctx)
 {
-  char hoursCheck[250] = "true";
   
   show_window3();
   
@@ -33,14 +29,19 @@ static void menu_select_callback(int index, void *ctx)
   
   if(index == 2)
   {
-    if(strcmp("truec", hours) == 0)
+    if(strcmp("open_true", hours) == 0)
     { 
       window3_add_text("Hours","Open Now"); 
     }
     
-    else
+    if(strcmp("open_false", hours) == 0)
     { 
       window3_add_text("Hours","Closed"); 
+    }
+    
+    if(strcmp("no_hours", hours) == 0)
+    { 
+      window3_add_text("Hours","Hours Not Available"); 
     }
 
   }
