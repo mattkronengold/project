@@ -20,7 +20,7 @@ function locationSuccess(pos)  {
       pos.coords.latitude + "," + pos.coords.longitude + 
       "&rankby=distance&types=" + type + "&key=AIzaSyAdjwtsTRvZmiPden6haSVlEdIvlQaDmQg";
   
-  //console.log("URL1: " + url);
+  console.log("URL1: " + url);
   
   //Send Request to Google
   
@@ -106,7 +106,7 @@ function getInfo()
   
   var url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeID + "&key=AIzaSyAdjwtsTRvZmiPden6haSVlEdIvlQaDmQg";
   
-  //console.log("URL2: " + url);
+  console.log("URL2: " + url);
   
   
   //Send Request to Google
@@ -123,16 +123,29 @@ function getInfo()
               var address = json2.result.formatted_address;
               var phone = json2.result.formatted_phone_number;
               
-             // if(typeof json2.result.opnening_hours.open_now != 'udefined')
-              //  {
-              //var hours = json2.result.opnening_hours.open_now;
-              //  }
+              var hours;
+
+              /*
+              console.log(json2.result.opening_hours.open_now);
               
-             // else
-              //  {
-              var    hours = "Hours not available";
-            //    }
+             if(json2.result.opening_hours.open_now.valueOf() === "true".valueOf())
+                {
+                  hours = "Open Now";
+                }
+              
+             else
+                {
+                  hours = "Closed";
+                }
+              
+              
+              */
+              hours = json2.result.opening_hours.open_now.valueOf();
+              hours += "c";
               console.log(hours);
+              console.log(address);
+              console.log(phone);
+              
               
   var dictionary = {
     "KEY_ADDRESS" : address,

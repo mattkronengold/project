@@ -87,9 +87,10 @@ void inbox_received_callback(DictionaryIterator *iterator, void *context)
   
   //Rename Menu Items
   
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Calling Add Items");
+ 
   if(add ==1)
   {
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Calling Add Items");
     add_items(name_buffer,num_places);
     add = 0;
   }

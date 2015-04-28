@@ -17,12 +17,13 @@ static SimpleMenuItem menu_items[NUM_MENU_ITEMS];
 
 static void menu_select_callback(int index, void *ctx)
 {
+  char hoursCheck[250] = "true";
+  
   show_window3();
   
   if(index == 0)
     {
     window3_add_text("Phone Number",phone);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Showing Phone: %s", phone);
   }
   
   if(index == 1)
@@ -31,8 +32,17 @@ static void menu_select_callback(int index, void *ctx)
   }
   
   if(index == 2)
-    {
-    window3_add_text("Hours",hours);
+  {
+    if(strcmp("truec", hours) == 0)
+    { 
+      window3_add_text("Hours","Open Now"); 
+    }
+    
+    else
+    { 
+      window3_add_text("Hours","Closed"); 
+    }
+
   }
 }
 
